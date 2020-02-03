@@ -90,6 +90,11 @@ describe("formatDates", () => {
     ];
     expect(formatDates(input)).to.eql(expected);
   });
+  it("does not mutate the data", () => {
+    const input = [];
+    expect(formatDates(input)).to.not.equal(input);
+    expect(formatDates(input)).to.eql([]);
+  });
 });
 
 describe("makeRefObj", () => {
@@ -110,17 +115,26 @@ describe("makeRefObj", () => {
     const expected = { A: 1, B: 2, C: 3 };
     expect(makeRefObj(input)).to.eql(expected);
   });
+  it("does not mutate the data", () => {
+    const input = [];
+    expect(makeRefObj(input)).to.not.equal(input);
+    expect(makeRefObj(input)).to.eql({});
+  });
 });
 
-describe.only("formatComments", () => {
+describe("formatComments", () => {
   it("returns an empty array when given an empty array", () => {
     expect(formatComments([])).to.eql([]);
   });
   it("returns an array with author and article_id when passed an array with one object", () => {
     const input = [
       {
+        body:
+          "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
         belongs_to: "They're not exactly dogs, are they?",
-        created_by: "butter_bridge"
+        created_by: "butter_bridge",
+        created_at: 1479818163389,
+        votes: -100
       }
     ];
     const refObj = {
@@ -128,10 +142,19 @@ describe.only("formatComments", () => {
     };
     const expected = [
       {
+        body:
+          "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
         article_id: 1,
-        author: "butter_bridge"
+        author: "butter_bridge",
+        created_at: new Date(1479818163389),
+        votes: -100
       }
     ];
     expect(formatComments(input, refObj)).to.eql(expected);
+  });
+  it("does not mutate the data", () => {
+    const input = [];
+    expect(formatComments(input)).to.not.equal(input);
+    expect(formatComments(input)).to.eql([]);
   });
 });
