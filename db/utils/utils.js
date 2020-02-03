@@ -2,6 +2,7 @@ exports.formatDates = list => {
   console.log(list);
   return list.map(({ ...changeDates }) => {
     changeDates.created_at = new Date(changeDates.created_at);
+    console.log(changeDates, "***");
     return changeDates;
   });
 };
