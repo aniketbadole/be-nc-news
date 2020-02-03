@@ -8,7 +8,6 @@ const {
 const { formatDates, formatComments, makeRefObj } = require("../utils/utils");
 
 exports.seed = function(knex) {
-  console.log(articlesData);
   return knex.migrate
     .rollback()
     .then(() => knex.migrate.latest())
@@ -20,7 +19,6 @@ exports.seed = function(knex) {
     })
     .then(() => {
       const formattedArticleData = formatDates(articlesData);
-      console.log(formattedArticleData, "<<<");
       return knex("articles")
         .insert(formattedArticleData)
         .returning("*");
