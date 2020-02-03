@@ -121,6 +121,14 @@ describe("app", () => {
             expect(result.body.msg).to.equal("Method Not Allowed");
           });
       });
+      it("GET 404: Get an error from the server when a valid but non existent ID is passed", () => {
+        return request(app)
+          .get("/api/users/nonexistentid")
+          .expect(404)
+          .then(result => {
+            expect(result.body.msg).to.equal("Not Found");
+          });
+      });
     });
   });
 });

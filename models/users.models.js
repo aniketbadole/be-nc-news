@@ -5,7 +5,11 @@ const selectUsers = username => {
     .select("*")
     .where("username", username)
     .then(results => {
-      return results[0];
+      if (results.length === 0) {
+        return Promise.reject({ status: 404, msg: "Not Found" });
+      } else {
+        return results[0];
+      }
     });
 };
 
