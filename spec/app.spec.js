@@ -15,7 +15,7 @@ describe("app", () => {
   });
 
   describe("/api", () => {
-    it("DELETE - 405 - Return an error 405 when other methods are requested'", () => {
+    it("DELETE - 405 - Return an error 405 when other methods are requested", () => {
       return request(app)
         .delete("/api")
         .expect(405)
@@ -145,8 +145,8 @@ describe("app", () => {
           });
       });
     });
-    describe("/articles", () => {
-      it("GET - 200 - Get a response from the server with a key called 'article", () => {
+    describe("/articles/:article_id", () => {
+      it("GET - 200 - Get a response from the server with a key called 'article'", () => {
         return request(app)
           .get("/api/articles/1")
           .expect(200)
@@ -160,6 +160,61 @@ describe("app", () => {
           .expect(200)
           .then(res => {
             expect(res.body.article).does.not.contain.key("username");
+            expect(res.body).to.be.an("object");
+            expect(res.body.article).to.be.an("object");
+          });
+      });
+      it("GET - 200 - Has a votes_count key", () => {
+        return request(app)
+          .get("/api/articles/1")
+          .expect(200)
+          .then(res => {
+            expect(res.body.article).to.contain.key("comment_count");
+            expect(res.body.article.comment_count).to.equal("13");
+          });
+      });
+      it("GET - 200 - Has comment_count and votes keys", () => {
+        return request(app)
+          .get("/api/articles/2")
+          .expect(200)
+          .then(res => {
+            expect(res.body.article.comment_count).to.equal("0");
+            expect(res.body.article.votes).to.equal(0);
+          });
+      });
+      it("GET - 400 - Get an error from the server when an invalid ID is passed", () => {
+        return request(app)
+          .get("/api/articles/nonexistent")
+          .expect(400)
+          .then(result => {
+            expect(result.body.msg).to.equal("Invalid Query");
+          });
+      });
+      it("GET - 404 - Get an error from the server when a valid but non existent ID is passed", () => {
+        return request(app)
+          .get("/api/articles/987654321")
+          .expect(404)
+          .then(result => {
+            console.log(result.body);
+            expect(result.body.msg).to.equal("Not Found");
+          });
+      });
+      it("PATCH - 200 - Responds with incremented votes", () => {
+        return request(app)
+          .patch("/api/articles/2")
+          .send({ inc_votes: 100 })
+          .then(res => {
+            expect(res.body.article).to.contain.key("votes");
+            expect(res.body.article.votes).to.equal(100);
+          });
+      });
+      it("PATCH - 200 - Responds with decremented votes", () => {
+        return request(app)
+          .patch("/api/articles/1")
+          .send({ inc_votes: -50 })
+          .then(res => {
+            expect(res.body.article).to.contain.key("votes");
+            expect(res.body.article.votes).to.equal(50);
           });
       });
     });
