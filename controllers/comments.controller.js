@@ -18,9 +18,11 @@ const addCommentByArticleID = (req, res, next) => {
 
 const getCommentsByArticleID = (req, res, next) => {
   const { article_id } = req.params;
-  getAllCommentsByArticleID(article_id)
+  const { sort_by } = req.query;
+  const { order } = req.query;
+  console.log(sort_by, order);
+  getAllCommentsByArticleID(article_id, sort_by, order)
     .then(comments => {
-      console.log(comments, "controller!!");
       res.status(200).send(comments);
     })
     .catch(err => {
