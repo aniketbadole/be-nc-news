@@ -1,4 +1,7 @@
-const postCommentByArticleID = require("../models/comments.models");
+const {
+  postCommentByArticleID,
+  getAllCommentsByArticleID
+} = require("../models/comments.models");
 
 const addCommentByArticleID = (req, res, next) => {
   const { article_id } = req.params;
@@ -13,4 +16,16 @@ const addCommentByArticleID = (req, res, next) => {
     });
 };
 
-module.exports = addCommentByArticleID;
+const getCommentsByArticleID = (req, res, next) => {
+  const { article_id } = req.params;
+  getAllCommentsByArticleID(article_id)
+    .then(comments => {
+      console.log(comments, "controller!!");
+      res.status(200).send(comments);
+    })
+    .catch(err => {
+      next(err);
+    });
+};
+
+module.exports = { addCommentByArticleID, getCommentsByArticleID };

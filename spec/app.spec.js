@@ -262,6 +262,16 @@ describe("app", () => {
             expect(result.body.msg).to.equal("Invalid Query");
           });
       });
+      it.only("GET - 200 - Responds with an array of comments by article_id", () => {
+        return request(app)
+          .get("/api/articles/1/comments")
+          .expect(200)
+          .then(result => {
+            expect(result.body.length).to.equal(13);
+            expect(result.body[0].article_id).to.eql(1);
+            expect(result.body[0]).to.contain.keys("comment_id");
+          });
+      });
     });
   });
 });

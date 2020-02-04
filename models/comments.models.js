@@ -14,4 +14,14 @@ const postCommentByArticleID = (article_id, username, body) => {
     });
 };
 
-module.exports = postCommentByArticleID;
+const getAllCommentsByArticleID = article_id => {
+  // console.log("in model");
+  return connection("comments")
+    .select("comments.*")
+    .where({ article_id })
+    .then(results => {
+      return results;
+    });
+};
+
+module.exports = { postCommentByArticleID, getAllCommentsByArticleID };

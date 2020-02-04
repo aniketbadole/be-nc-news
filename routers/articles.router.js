@@ -3,7 +3,10 @@ const {
   getArticlesByID,
   changeVotesByID
 } = require("../controllers/articles.controller");
-const addCommentByArticleID = require("../controllers/comments.controller");
+const {
+  addCommentByArticleID,
+  getCommentsByArticleID
+} = require("../controllers/comments.controller");
 const { handle405Errors } = require("../errors/index");
 
 articlesRouter
@@ -14,6 +17,7 @@ articlesRouter
 
 articlesRouter
   .route("/:article_id/comments")
+  .get(getCommentsByArticleID)
   .post(addCommentByArticleID)
   .all(handle405Errors);
 
