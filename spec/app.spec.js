@@ -15,6 +15,14 @@ describe("app", () => {
   });
 
   describe("/api", () => {
+    it("DELETE - 405 - Return an error 405 when other methods are requested'", () => {
+      return request(app)
+        .delete("/api")
+        .expect(405)
+        .then(result => {
+          expect(result.body.msg).to.equal("Method Not Allowed");
+        });
+    });
     describe("/topics", () => {
       it("GET - 200 - Get a response from the server", () => {
         return request(app)
@@ -26,7 +34,7 @@ describe("app", () => {
             expect(result.body.topics[0]).to.have.keys("description", "slug");
           });
       });
-      it("POST - 405 - Return an error 405 when other methods are requested'", () => {
+      it("POST - 405 - Return an error 405 when other methods are requested", () => {
         return request(app)
           .post("/api/topics")
           .send({ name: "Aniket" })
@@ -35,7 +43,7 @@ describe("app", () => {
             expect(result.body.msg).to.equal("Method Not Allowed");
           });
       });
-      it("PATCH - 405 - Return an error 405 when other methods are requested'", () => {
+      it("PATCH - 405 - Return an error 405 when other methods are requested", () => {
         return request(app)
           .patch("/api/topics")
           .send({ name: "Aniket" })
@@ -44,7 +52,7 @@ describe("app", () => {
             expect(result.body.msg).to.equal("Method Not Allowed");
           });
       });
-      it("DELETE - 405 - Return an error 405 when other methods are requested'", () => {
+      it("DELETE - 405 - Return an error 405 when other methods are requested", () => {
         return request(app)
           .delete("/api/topics")
           .expect(405)
@@ -59,17 +67,24 @@ describe("app", () => {
           .get("/api/users/icellusedkars")
           .expect(200)
           .then(res => {
-            expect(res.body.users.username).to.eql("icellusedkars");
-            expect(res.body.users.name).to.eql("sam");
-            expect(res.body.users).to.contain.keys(
+            expect(res.body.user.username).to.eql("icellusedkars");
+            expect(res.body.user.name).to.eql("sam");
+            expect(res.body.user).to.contain.keys(
               "username",
               "avatar_url",
               "name"
             );
-            expect(res.body).to.contain.keys("users");
           });
       });
-      it("POST - 405 - Return an error 405 when other methods are requested'", () => {
+      it("GET - 200 - Get a response from the server with the right key 'user'", () => {
+        return request(app)
+          .get("/api/users/icellusedkars")
+          .expect(200)
+          .then(res => {
+            expect(res.body).to.contain.keys("user");
+          });
+      });
+      it("POST - 405 - Return an error 405 when other methods are requested", () => {
         return request(app)
           .post("/api/users")
           .send({ name: "Aniket" })
@@ -78,7 +93,7 @@ describe("app", () => {
             expect(result.body.msg).to.equal("Method Not Allowed");
           });
       });
-      it("PATCH - 405 - Return an error 405 when other methods are requested'", () => {
+      it("PATCH - 405 - Return an error 405 when other methods are requested", () => {
         return request(app)
           .patch("/api/users")
           .send({ name: "Aniket" })
@@ -87,7 +102,7 @@ describe("app", () => {
             expect(result.body.msg).to.equal("Method Not Allowed");
           });
       });
-      it("DELETE - 405 - Return an error 405 when other methods are requested'", () => {
+      it("DELETE - 405 - Return an error 405 when other methods are requested", () => {
         return request(app)
           .delete("/api/users")
           .expect(405)
@@ -95,7 +110,7 @@ describe("app", () => {
             expect(result.body.msg).to.equal("Method Not Allowed");
           });
       });
-      it("POST - 405 - Return an error 405 when other methods are requested with the parameter endpoint'", () => {
+      it("POST - 405 - Return an error 405 when other methods are requested with the parameter endpoint", () => {
         return request(app)
           .post("/api/users/butter_bridge")
           .send({ name: "Aniket" })
@@ -104,7 +119,7 @@ describe("app", () => {
             expect(result.body.msg).to.equal("Method Not Allowed");
           });
       });
-      it("PATCH - 405 - Return an error 405 when other methods are requested with the parameter endpoint'", () => {
+      it("PATCH - 405 - Return an error 405 when other methods are requested with the parameter endpoint", () => {
         return request(app)
           .patch("/api/users/butter_bridge")
           .send({ name: "Aniket" })
@@ -113,7 +128,7 @@ describe("app", () => {
             expect(result.body.msg).to.equal("Method Not Allowed");
           });
       });
-      it("DELETE - 405 - Return an error 405 when other methods are requested with the parameter endpoint'", () => {
+      it("DELETE - 405 - Return an error 405 when other methods are requested with the parameter endpoint", () => {
         return request(app)
           .delete("/api/users/butter_bridge")
           .expect(405)
@@ -127,6 +142,24 @@ describe("app", () => {
           .expect(404)
           .then(result => {
             expect(result.body.msg).to.equal("Not Found");
+          });
+      });
+    });
+    describe("/articles", () => {
+      it("GET - 200 - Get a response from the server with a key called 'article", () => {
+        return request(app)
+          .get("/api/articles/1")
+          .expect(200)
+          .then(res => {
+            expect(res.body).to.contain.keys("article");
+          });
+      });
+      it("GET - 200 - Get a response from the server", () => {
+        return request(app)
+          .get("/api/articles/1")
+          .expect(200)
+          .then(res => {
+            expect(res.body.article).does.not.contain.key("username");
           });
       });
     });
