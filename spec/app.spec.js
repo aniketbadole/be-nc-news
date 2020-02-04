@@ -178,6 +178,7 @@ describe("app", () => {
           .get("/api/articles/2")
           .expect(200)
           .then(res => {
+            // console.log(res.body);
             expect(res.body.article.comment_count).to.equal("0");
             expect(res.body.article.votes).to.equal(0);
           });
@@ -195,7 +196,6 @@ describe("app", () => {
           .get("/api/articles/987654321")
           .expect(404)
           .then(result => {
-            console.log(result.body);
             expect(result.body.msg).to.equal("Not Found");
           });
       });
@@ -215,6 +215,33 @@ describe("app", () => {
           .then(res => {
             expect(res.body.article).to.contain.key("votes");
             expect(res.body.article.votes).to.equal(50);
+          });
+      });
+      it("POST - 405 - Return an error 405 when other methods are requested with the parameter endpoint", () => {
+        return request(app)
+          .post("/api/articles/1")
+          .send({ name: "Aniket" })
+          .expect(405)
+          .then(result => {
+            expect(result.body.msg).to.equal("Method Not Allowed");
+          });
+      });
+      it("DELETE - 405 - Return an error 405 when other methods are requested with the parameter endpoint", () => {
+        return request(app)
+          .delete("/api/articles/2")
+          .expect(405)
+          .then(result => {
+            expect(result.body.msg).to.equal("Method Not Allowed");
+          });
+      });
+    });
+    describe.only("/articles/:article_id/comments", () => {
+      it("POST - 200 - Get a response from the server", () => {
+        return request(app)
+          .post("/api/articles/2/comments")
+          .send({ username: "icellusedkars", body: "this is a comment" })
+          .then(res => {
+            console.log(res.body);
           });
       });
     });
