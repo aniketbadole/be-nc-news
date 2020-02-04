@@ -12,7 +12,10 @@ articlesRouter
   .patch(changeVotesByID)
   .all(handle405Errors);
 
-articlesRouter.route("/:article_id/comments").post(addCommentByArticleID);
+articlesRouter
+  .route("/:article_id/comments")
+  .post(addCommentByArticleID)
+  .all(handle405Errors);
 
 articlesRouter.route("/").all(handle405Errors);
 

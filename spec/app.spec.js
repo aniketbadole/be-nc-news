@@ -235,13 +235,31 @@ describe("app", () => {
           });
       });
     });
-    describe.only("/articles/:article_id/comments", () => {
+    describe("/articles/:article_id/comments", () => {
       it("POST - 200 - Get a response from the server", () => {
         return request(app)
           .post("/api/articles/2/comments")
           .send({ username: "icellusedkars", body: "this is a comment" })
-          .then(res => {
-            console.log(res.body);
+          .then(result => {
+            expect(result.body).to.have.keys("comment");
+            expect(result.body.comment).to.contain.keys("body", "comment_id");
+          });
+      });
+      it("POST - 404 - Return error 404 when a valid but non existent ID is passed", () => {
+        return request(app)
+          .post("/api/articles/987654321/comments")
+          .send({ username: "icellusedkars", body: "this is a comment" })
+          .expect(404)
+          .then(result => {
+            expect(result.body.msg).to.equal("Not Found");
+          });
+      });
+      it("POST - 400 - Return an error from the server when an invalid ID is passed", () => {
+        return request(app)
+          .post("/api/articles/nonexistent/comments")
+          .expect(400)
+          .then(result => {
+            expect(result.body.msg).to.equal("Invalid Query");
           });
       });
     });
