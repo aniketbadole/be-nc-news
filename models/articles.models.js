@@ -41,9 +41,13 @@ const selectAllArticles = (
   topic
 ) => {
   console.log("in selectAllArticles article model");
+
   //const key = Object.keys(query)[0];
   //const value = Object.values(query)[0];
   //console.log(key, value, "query kv");
+  if (order != "desc" && order != "asc") {
+    order = "desc";
+  }
   const authorQuery = queryBuilder => {
     if (author !== undefined) {
       queryBuilder.where("articles.author", author);
@@ -54,6 +58,7 @@ const selectAllArticles = (
       queryBuilder.where("topic", topic);
     }
   };
+
   return connection("articles")
     .select("articles.*")
     .orderBy(sort_by, order)
@@ -65,10 +70,10 @@ const selectAllArticles = (
     .then(articles => {
       console.log(articles, "model!");
       return articles;
-    })
-    .catch(err => {
-      console.log(err);
     });
+  // .catch(err => {
+  //   console.log(err);
+  // });
 };
 
 module.exports = { selectArticlesByID, updateVotesByID, selectAllArticles };

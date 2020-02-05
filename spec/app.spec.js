@@ -344,7 +344,6 @@ describe("app", () => {
           .get("/api/articles")
           .expect(200)
           .then(result => {
-            console.log(result.body);
             expect(result.body[0]).to.contain.keys(
               "article_id",
               "title",
@@ -361,7 +360,6 @@ describe("app", () => {
           .get("/api/articles/?sort_by=created_at")
           .expect(200)
           .then(result => {
-            console.log(result.body);
             expect(result.body).to.be.sortedBy("created_at", {
               descending: true
             });
@@ -372,7 +370,6 @@ describe("app", () => {
           .get("/api/articles/?sort_by=created_at&order=asc")
           .expect(200)
           .then(result => {
-            console.log(result.body);
             expect(result.body).to.be.sortedBy("created_at", {
               descending: false
             });
@@ -383,7 +380,6 @@ describe("app", () => {
           .get("/api/articles/?sort_by=author")
           .expect(200)
           .then(result => {
-            console.log(result.body);
             expect(result.body).to.be.sortedBy("author", {
               descending: true
             });
@@ -394,7 +390,6 @@ describe("app", () => {
           .get("/api/articles/?sort_by=author&order=asc")
           .expect(200)
           .then(result => {
-            console.log(result.body);
             expect(result.body).to.be.sortedBy("author", {
               descending: false
             });
@@ -405,7 +400,6 @@ describe("app", () => {
           .get("/api/articles/?order=asc")
           .expect(200)
           .then(result => {
-            console.log(result.body);
             expect(result.body).to.be.sortedBy("created_at", {
               descending: false
             });
@@ -416,7 +410,6 @@ describe("app", () => {
           .get("/api/articles/?order=desc")
           .expect(200)
           .then(result => {
-            console.log(result.body);
             expect(result.body).to.be.sortedBy("created_at", {
               descending: true
             });
@@ -433,40 +426,69 @@ describe("app", () => {
             expect(result.body[0].author).to.eql("butter_bridge");
           });
       });
-      it.only("GET - 200 - Get a response from the server when a query is passed: topic - mitch", () => {
+      it("GET - 200 - Get a response from the server when a query is passed: topic - mitch, returning an array with objects which has key value pair of topic & mitch", () => {
         return request(app)
           .get("/api/articles/?topic=mitch")
           .expect(200)
           .then(result => {
+            expect(result.body).to.be.sortedBy("created_at", {
+              descending: true
+            });
             expect(result.body[0].topic).to.eql("mitch");
           });
       });
-      it("GET - 200 - Get a response from the server when a query is passed: author - lurker", () => {
+      it("GET - 200 - Get a response from the server when a query is passed: author - lurker, returning an empty array", () => {
         return request(app)
           .get("/api/articles/?author=lurker")
           .expect(200)
           .then(result => {
-            console.log(result.body);
             expect(result.body).to.eql([]);
           });
       });
-      it("GET - 200 - Get a response from the server when a query is passed: topic - paper", () => {
+      it("GET - 200 - Get a response from the server when a query is passed: topic - paper, returning an empty array", () => {
         return request(app)
           .get("/api/articles/?topic=paper")
           .expect(200)
           .then(result => {
-            console.log(result.body);
             expect(result.body).to.eql([]);
-            // expect(result.body).to.be.sortedBy("author", {
-            //   descending: true
-            // });
           });
       });
-      it.skip("GET - 200 - ", () => {
+      it("GET - 400 - Return an error when a column that does not exist is passed in the query - sort_by", () => {
         return request(app)
-          .get("/api/articles/?sort_by=not-a-column")
+          .get("/api/articles/?sort_by=column-does-not-exist")
+          .expect(400)
           .then(result => {
             console.log(result.body);
+            expect(result.body.msg).to.eql("Error! Column Does Not Exist");
+          });
+      });
+      it("GET - 400 - Return an error when a column that does not exist is passed in the query - order", () => {
+        return request(app)
+          .get("/api/articles/?order=column-does-not-exist")
+          .expect(200)
+          .then(result => {
+            console.log(result.body, "spec");
+            // expect(result.body.msg).to.eql("Error! Column Does Not Exist");
+            expect(result.body).to.be.sortedBy("created_at", {
+              descending: true
+            });
+          });
+      });
+      it("PATCH - 405 - Return an error 405 when other methods are requested", () => {
+        return request(app)
+          .patch("/api/articles")
+          .send({ name: "Aniket" })
+          .expect(405)
+          .then(result => {
+            expect(result.body.msg).to.equal("Method Not Allowed");
+          });
+      });
+      it("DELETE - 405 - Return an error 405 when other methods are requested", () => {
+        return request(app)
+          .delete("/api/articles")
+          .expect(405)
+          .then(result => {
+            expect(result.body.msg).to.equal("Method Not Allowed");
           });
       });
     });
