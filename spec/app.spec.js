@@ -67,10 +67,10 @@ describe("app", () => {
         return request(app)
           .get("/api/users/icellusedkars")
           .expect(200)
-          .then(res => {
-            expect(res.body.user.username).to.eql("icellusedkars");
-            expect(res.body.user.name).to.eql("sam");
-            expect(res.body.user).to.contain.keys(
+          .then(result => {
+            expect(result.body.user.username).to.eql("icellusedkars");
+            expect(result.body.user.name).to.eql("sam");
+            expect(result.body.user).to.contain.keys(
               "username",
               "avatar_url",
               "name"
@@ -81,8 +81,8 @@ describe("app", () => {
         return request(app)
           .get("/api/users/icellusedkars")
           .expect(200)
-          .then(res => {
-            expect(res.body).to.contain.keys("user");
+          .then(result => {
+            expect(result.body).to.contain.keys("user");
           });
       });
       it("POST - 405 - Return an error 405 when other methods are requested", () => {
@@ -151,37 +151,37 @@ describe("app", () => {
         return request(app)
           .get("/api/articles/1")
           .expect(200)
-          .then(res => {
-            expect(res.body).to.contain.keys("article");
+          .then(result => {
+            expect(result.body).to.contain.keys("article");
           });
       });
       it("GET - 200 - Get a response from the server", () => {
         return request(app)
           .get("/api/articles/1")
           .expect(200)
-          .then(res => {
-            expect(res.body.article).does.not.contain.key("username");
-            expect(res.body).to.be.an("object");
-            expect(res.body.article).to.be.an("object");
+          .then(result => {
+            expect(result.body.article).does.not.contain.key("username");
+            expect(result.body).to.be.an("object");
+            expect(result.body.article).to.be.an("object");
           });
       });
       it("GET - 200 - Has a votes_count key", () => {
         return request(app)
           .get("/api/articles/1")
           .expect(200)
-          .then(res => {
-            expect(res.body.article).to.contain.key("comment_count");
-            expect(res.body.article.comment_count).to.equal("13");
+          .then(result => {
+            expect(result.body.article).to.contain.key("comment_count");
+            expect(result.body.article.comment_count).to.equal("13");
           });
       });
       it("GET - 200 - Has comment_count and votes keys", () => {
         return request(app)
           .get("/api/articles/2")
           .expect(200)
-          .then(res => {
+          .then(result => {
             // console.log(res.body);
-            expect(res.body.article.comment_count).to.equal("0");
-            expect(res.body.article.votes).to.equal(0);
+            expect(result.body.article.comment_count).to.equal("0");
+            expect(result.body.article.votes).to.equal(0);
           });
       });
       it("GET - 400 - Get an error from the server when an invalid ID is passed", () => {
@@ -204,18 +204,18 @@ describe("app", () => {
         return request(app)
           .patch("/api/articles/2")
           .send({ inc_votes: 100 })
-          .then(res => {
-            expect(res.body.article).to.contain.key("votes");
-            expect(res.body.article.votes).to.equal(100);
+          .then(result => {
+            expect(result.body.article).to.contain.key("votes");
+            expect(result.body.article.votes).to.equal(100);
           });
       });
       it("PATCH - 200 - Responds with decremented votes", () => {
         return request(app)
           .patch("/api/articles/1")
           .send({ inc_votes: -50 })
-          .then(res => {
-            expect(res.body.article).to.contain.key("votes");
-            expect(res.body.article.votes).to.equal(50);
+          .then(result => {
+            expect(result.body.article).to.contain.key("votes");
+            expect(result.body.article.votes).to.equal(50);
           });
       });
       it("POST - 405 - Return an error 405 when other methods are requested with the parameter endpoint", () => {
@@ -318,6 +318,42 @@ describe("app", () => {
           .then(result => {
             console.log(result.body);
             expect(result.body).to.be.sortedBy("votes");
+          });
+      });
+      it("PATCH - 405 - Return an error 405 when other methods are requested", () => {
+        return request(app)
+          .patch("/api/articles/1/comments")
+          .send({ name: "Aniket" })
+          .expect(405)
+          .then(result => {
+            expect(result.body.msg).to.equal("Method Not Allowed");
+          });
+      });
+      it("DELETE - 405 - Return an error 405 when other methods are requested", () => {
+        return request(app)
+          .delete("/api/articles/2/comments")
+          .expect(405)
+          .then(result => {
+            expect(result.body.msg).to.equal("Method Not Allowed");
+          });
+      });
+    });
+    describe.only("/articles", () => {
+      it("GET - 200 - Get a response from the server", () => {
+        return request(app)
+          .get("/api/articles")
+          .expect(200)
+          .then(result => {
+            console.log(result.body);
+            expect(result.body[0]).to.contain.keys(
+              "article_id",
+              "title",
+              "author",
+              "topic",
+              "created_at",
+              "votes",
+              "comment_count"
+            );
           });
       });
     });

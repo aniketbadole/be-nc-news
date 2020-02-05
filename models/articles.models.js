@@ -34,4 +34,32 @@ const updateVotesByID = (article_id, inc_votes) => {
     });
 };
 
-module.exports = { selectArticlesByID, updateVotesByID };
+const selectAllArticles = (sort_by = "created_at", order = "desc", query) => {
+  console.log("in selectAllArticles article model");
+  const key = Object.keys(query)[0];
+  const value = Object.values(query)[0];
+  const authorQuery = queryBuilder => {
+    if (query.author !== undefined) {
+      queryBuilder.where(key, value);
+    }
+  };
+  const topicQuery = queryBuilder => {
+    if (query.topic !== undefined) {
+      queryBuilder.where(key, value);
+    }
+  };
+  return connection("articles")
+    .select("articles.*")
+    .count({ comment_count: "comment_id" })
+    .leftJoin("comments", "articles.article_id", "comments.article_id")
+    .groupBy("articles.article_id")
+    .orderBy(sort_by, order)
+    .modify(authorQuery)
+    .modify(topicQuery)
+    .then(articles => {
+      console.log(articles, "model!");
+      return articles;
+    });
+};
+
+module.exports = { selectArticlesByID, updateVotesByID, selectAllArticles };

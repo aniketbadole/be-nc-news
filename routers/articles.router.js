@@ -1,7 +1,8 @@
 const articlesRouter = require("express").Router();
 const {
   getArticlesByID,
-  changeVotesByID
+  changeVotesByID,
+  getAllArticles
 } = require("../controllers/articles.controller");
 const {
   addCommentByArticleID,
@@ -21,6 +22,9 @@ articlesRouter
   .post(addCommentByArticleID)
   .all(handle405Errors);
 
-articlesRouter.route("/").all(handle405Errors);
+articlesRouter
+  .route("/")
+  .get(getAllArticles)
+  .all(handle405Errors);
 
 module.exports = articlesRouter;
