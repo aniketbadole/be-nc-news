@@ -338,7 +338,7 @@ describe("app", () => {
           });
       });
     });
-    describe.only("/articles", () => {
+    describe("/articles", () => {
       it("GET - 200 - Get a response from the server", () => {
         return request(app)
           .get("/api/articles")
@@ -354,6 +354,119 @@ describe("app", () => {
               "votes",
               "comment_count"
             );
+          });
+      });
+      it("GET - 200 - Get a response from the server when a query is passed: sort by - date and order - descending", () => {
+        return request(app)
+          .get("/api/articles/?sort_by=created_at")
+          .expect(200)
+          .then(result => {
+            console.log(result.body);
+            expect(result.body).to.be.sortedBy("created_at", {
+              descending: true
+            });
+          });
+      });
+      it("GET - 200 - Get a response from the server when a query is passed: sort by - date and order - ascending", () => {
+        return request(app)
+          .get("/api/articles/?sort_by=created_at&order=asc")
+          .expect(200)
+          .then(result => {
+            console.log(result.body);
+            expect(result.body).to.be.sortedBy("created_at", {
+              descending: false
+            });
+          });
+      });
+      it("GET - 200 - Get a response from the server when a query is passed: sort by - author and order - descending", () => {
+        return request(app)
+          .get("/api/articles/?sort_by=author")
+          .expect(200)
+          .then(result => {
+            console.log(result.body);
+            expect(result.body).to.be.sortedBy("author", {
+              descending: true
+            });
+          });
+      });
+      it("GET - 200 - Get a response from the server when a query is passed: sort by - author and order - ascending", () => {
+        return request(app)
+          .get("/api/articles/?sort_by=author&order=asc")
+          .expect(200)
+          .then(result => {
+            console.log(result.body);
+            expect(result.body).to.be.sortedBy("author", {
+              descending: false
+            });
+          });
+      });
+      it("GET - 200 - Get a response from the server when a query is passed: order - ascending", () => {
+        return request(app)
+          .get("/api/articles/?order=asc")
+          .expect(200)
+          .then(result => {
+            console.log(result.body);
+            expect(result.body).to.be.sortedBy("created_at", {
+              descending: false
+            });
+          });
+      });
+      it("GET - 200 - Get a response from the server when a query is passed: order - descending", () => {
+        return request(app)
+          .get("/api/articles/?order=desc")
+          .expect(200)
+          .then(result => {
+            console.log(result.body);
+            expect(result.body).to.be.sortedBy("created_at", {
+              descending: true
+            });
+          });
+      });
+      it("GET - 200 - Get a response from the server when a query is passed: author - butter_bridge", () => {
+        return request(app)
+          .get("/api/articles/?author=butter_bridge")
+          .expect(200)
+          .then(result => {
+            expect(result.body).to.be.sortedBy("author", {
+              descending: true
+            });
+            expect(result.body[0].author).to.eql("butter_bridge");
+          });
+      });
+      it.only("GET - 200 - Get a response from the server when a query is passed: topic - mitch", () => {
+        return request(app)
+          .get("/api/articles/?topic=mitch")
+          .expect(200)
+          .then(result => {
+            expect(result.body[0].topic).to.eql("mitch");
+          });
+      });
+      it("GET - 200 - Get a response from the server when a query is passed: author - lurker", () => {
+        return request(app)
+          .get("/api/articles/?author=lurker")
+          .expect(200)
+          .then(result => {
+            console.log(result.body);
+            expect(result.body).to.eql([]);
+          });
+      });
+      it("GET - 200 - Get a response from the server when a query is passed: topic - paper", () => {
+        return request(app)
+          .get("/api/articles/?topic=paper")
+          .expect(200)
+          .then(result => {
+            console.log(result.body);
+            expect(result.body).to.eql([]);
+            // expect(result.body).to.be.sortedBy("author", {
+            //   descending: true
+            // });
+          });
+      });
+      it.skip("GET - 200 - ", () => {
+        return request(app)
+          .get("/api/articles/?sort_by=not-a-column")
+          .then(result => {
+            console.log(result.body);
           });
       });
     });

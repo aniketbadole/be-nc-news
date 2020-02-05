@@ -28,14 +28,15 @@ const changeVotesByID = (req, res, next) => {
 };
 
 const getAllArticles = (req, res, next) => {
-  const { query } = req;
-  const { sort_by } = req.query;
-  const { order } = req.query;
+  //const { query } = req;
+  const { sort_by, order, author, topic } = req.query;
+  //const { order } = req.query;
+  console.log(author, "author");
   console.log(sort_by, order);
   console.log("in getAllArticles article controller");
-  selectAllArticles(sort_by, order, query)
+  selectAllArticles(sort_by, order, author, topic)
     .then(articles => {
-      console.log(articles, "controller!");
+      //console.log(articles, "controller!");
       res.status(200).send(articles);
     })
     .catch(err => {
