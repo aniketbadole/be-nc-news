@@ -576,6 +576,14 @@ describe("app", () => {
           .del("/api/comments/1")
           .expect(204);
       });
+      it("DELETE - 400 - Return an error from the server when an invalid comment ID is passed", () => {
+        return request(app)
+          .del("/api/comments/invalid-id")
+          .expect(400)
+          .then(result => {
+            expect(result.body.msg).to.equal("Invalid Query");
+          });
+      });
     });
   });
 });
