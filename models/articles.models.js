@@ -58,7 +58,6 @@ const selectAllArticles = (
       queryBuilder.where("topic", topic);
     }
   };
-
   return connection("articles")
     .select("articles.*")
     .orderBy(sort_by, order)
@@ -71,9 +70,6 @@ const selectAllArticles = (
       console.log(articles, "model!");
       return articles;
     });
-  // .catch(err => {
-  //   console.log(err);
-  // });
 };
 
 module.exports = { selectArticlesByID, updateVotesByID, selectAllArticles };

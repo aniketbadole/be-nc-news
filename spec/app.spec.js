@@ -458,7 +458,6 @@ describe("app", () => {
           .get("/api/articles/?sort_by=column-does-not-exist")
           .expect(400)
           .then(result => {
-            console.log(result.body);
             expect(result.body.msg).to.eql("Error! Column Does Not Exist");
           });
       });
@@ -467,7 +466,6 @@ describe("app", () => {
           .get("/api/articles/?order=column-does-not-exist")
           .expect(200)
           .then(result => {
-            console.log(result.body, "spec");
             // expect(result.body.msg).to.eql("Error! Column Does Not Exist");
             expect(result.body).to.be.sortedBy("created_at", {
               descending: true
@@ -489,6 +487,70 @@ describe("app", () => {
           .expect(405)
           .then(result => {
             expect(result.body.msg).to.equal("Method Not Allowed");
+          });
+      });
+    });
+    describe("/comments/:comment_id", () => {
+      it("PATCH - 200 - Responds with incremented votes", () => {
+        return request(app)
+          .patch("/api/comments/2")
+          .send({ inc_votes: 100 })
+          .then(result => {
+            expect(result.body.comment).to.contain.key("votes");
+            expect(result.body.comment.votes).to.equal(114);
+          });
+      });
+      it("PATCH - 200 - Responds with decremented votes", () => {
+        return request(app)
+          .patch("/api/comments/2")
+          .send({ inc_votes: -8 })
+          .then(result => {
+            expect(result.body.comment).to.contain.key("votes");
+            expect(result.body.comment.votes).to.equal(6);
+          });
+      });
+      it("PATCH - 200 - Responds with incremented votes", () => {
+        return request(app)
+          .patch("/api/comments/7")
+          .send({ inc_votes: 10 })
+          .then(result => {
+            expect(result.body.comment.votes).to.equal(10);
+            expect(result.body.comment).to.contain.key("votes");
+          });
+      });
+      it("PATCH - 200 - Responds with decremented votes", () => {
+        return request(app)
+          .patch("/api/comments/7")
+          .send({ inc_votes: -42 })
+          .then(result => {
+            expect(result.body.comment.votes).to.equal(-42);
+            expect(result.body.comment).to.contain.key("votes");
+          });
+      });
+      it("PATCH - 200 - Does not change votes when passed 0", () => {
+        return request(app)
+          .patch("/api/comments/2")
+          .send({ inc_votes: 0 })
+          .then(result => {
+            expect(result.body.comment).to.contain.key("votes");
+            expect(result.body.comment.votes).to.equal(14);
+          });
+      });
+      it("PATCH - 200 - Does not change votes when no value is passed", () => {
+        return request(app)
+          .patch("/api/comments/2")
+          .send({})
+          .then(result => {
+            expect(result.body.comment).to.contain.key("votes");
+            expect(result.body.comment.votes).to.equal(14);
+          });
+      });
+      it("PATCH - 400 - Returns an error when sent an invalid votes value", () => {
+        return request(app)
+          .patch("/api/comments/2")
+          .send({ inc_votes: "invalid_votes" })
+          .then(result => {
+            expect(result.body.msg).to.equal("Invalid Query");
           });
       });
     });

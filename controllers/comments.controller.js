@@ -1,6 +1,7 @@
 const {
   postCommentByArticleID,
-  getAllCommentsByArticleID
+  getAllCommentsByArticleID,
+  patchCommentsByCommentID
 } = require("../models/comments.models");
 
 const addCommentByArticleID = (req, res, next) => {
@@ -30,4 +31,23 @@ const getCommentsByArticleID = (req, res, next) => {
     });
 };
 
-module.exports = { addCommentByArticleID, getCommentsByArticleID };
+const changeVotesByCommentID = (req, res, next) => {
+  const { comment_id } = req.params;
+  const { inc_votes } = req.body;
+  console.log(comment_id, inc_votes);
+  console.log("changeVotesByCommentID comments controller");
+  patchCommentsByCommentID(comment_id, inc_votes)
+    .then(comment => {
+      console.log(comment, "controller comment");
+      res.status(200).send({ comment });
+    })
+    .catch(err => {
+      next(err);
+    });
+};
+
+module.exports = {
+  addCommentByArticleID,
+  getCommentsByArticleID,
+  changeVotesByCommentID
+};

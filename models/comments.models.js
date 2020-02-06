@@ -41,4 +41,22 @@ const getAllCommentsByArticleID = (
     });
 };
 
-module.exports = { postCommentByArticleID, getAllCommentsByArticleID };
+const patchCommentsByCommentID = (comment_id, inc_votes = 0) => {
+  console.log("patchCommentsByCommentID comments model");
+  console.log(inc_votes, "model inc_votes***");
+
+  return connection("comments")
+    .where({ comment_id })
+    .increment("votes", inc_votes)
+    .returning("*")
+    .then(comment => {
+      console.log(comment[0], "from model");
+      return comment[0];
+    });
+};
+
+module.exports = {
+  postCommentByArticleID,
+  getAllCommentsByArticleID,
+  patchCommentsByCommentID
+};
