@@ -22,7 +22,6 @@ const getCommentsByArticleID = (req, res, next) => {
   const { article_id } = req.params;
   const { sort_by } = req.query;
   const { order } = req.query;
-  console.log(sort_by, order);
   getAllCommentsByArticleID(article_id, sort_by, order)
     .then(comments => {
       res.status(200).send(comments);
@@ -35,11 +34,8 @@ const getCommentsByArticleID = (req, res, next) => {
 const changeVotesByCommentID = (req, res, next) => {
   const { comment_id } = req.params;
   const { inc_votes } = req.body;
-  console.log(comment_id, inc_votes);
-  console.log("changeVotesByCommentID comments controller");
   patchCommentsByCommentID(comment_id, inc_votes)
     .then(comment => {
-      console.log(comment, "controller comment");
       res.status(200).send({ comment });
     })
     .catch(err => {

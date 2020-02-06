@@ -40,11 +40,8 @@ const selectAllArticles = (
   author,
   topic
 ) => {
-  console.log("in selectAllArticles article model");
-
   //const key = Object.keys(query)[0];
   //const value = Object.values(query)[0];
-  //console.log(key, value, "query kv");
   if (order != "desc" && order != "asc") {
     order = "desc";
   }
@@ -67,7 +64,6 @@ const selectAllArticles = (
     .groupBy("articles.article_id")
     .modify(authorQuery)
     .then(articles => {
-      console.log(articles, "model!");
       return articles;
     });
 };

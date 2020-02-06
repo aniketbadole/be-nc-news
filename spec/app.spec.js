@@ -179,7 +179,6 @@ describe("app", () => {
           .get("/api/articles/2")
           .expect(200)
           .then(result => {
-            // console.log(res.body);
             expect(result.body.article.comment_count).to.equal("0");
             expect(result.body.article.votes).to.equal(0);
           });
@@ -294,7 +293,6 @@ describe("app", () => {
           .get("/api/articles/1/comments?sort_by=created_at")
           .expect(200)
           .then(result => {
-            console.log(result.body);
             expect(result.body).to.be.sortedBy("created_at", {
               descending: true
             });
@@ -305,7 +303,6 @@ describe("app", () => {
           .get("/api/articles/1/comments?sort_by=votes")
           .expect(200)
           .then(result => {
-            console.log(result.body);
             expect(result.body).to.be.sortedBy("votes", {
               descending: true
             });
@@ -316,7 +313,6 @@ describe("app", () => {
           .get("/api/articles/1/comments?sort_by=votes&order=asc")
           .expect(200)
           .then(result => {
-            console.log(result.body);
             expect(result.body).to.be.sortedBy("votes");
           });
       });

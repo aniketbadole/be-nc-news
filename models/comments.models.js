@@ -18,7 +18,6 @@ const getAllCommentsByArticleID = (
   sort_by = "created_at",
   order = "desc"
 ) => {
-  // console.log("in model");
   return connection("comments")
     .select("comments.*")
     .where({ article_id })
@@ -42,15 +41,11 @@ const getAllCommentsByArticleID = (
 };
 
 const patchCommentsByCommentID = (comment_id, inc_votes = 0) => {
-  console.log("patchCommentsByCommentID comments model");
-  console.log(inc_votes, "model inc_votes***");
-
   return connection("comments")
     .where({ comment_id })
     .increment("votes", inc_votes)
     .returning("*")
     .then(comment => {
-      console.log(comment[0], "from model");
       return comment[0];
     });
 };
