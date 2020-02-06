@@ -340,7 +340,8 @@ describe("app", () => {
           .get("/api/articles")
           .expect(200)
           .then(result => {
-            expect(result.body[0]).to.contain.keys(
+            // console.log(result.body);
+            expect(result.body.articles[0]).to.contain.keys(
               "article_id",
               "title",
               "author",
@@ -349,6 +350,7 @@ describe("app", () => {
               "votes",
               "comment_count"
             );
+            expect(result.body).to.contain.key("articles");
           });
       });
       it("GET - 200 - Get a response from the server when a query is passed: sort by - date and order - descending", () => {
@@ -356,7 +358,7 @@ describe("app", () => {
           .get("/api/articles/?sort_by=created_at")
           .expect(200)
           .then(result => {
-            expect(result.body).to.be.sortedBy("created_at", {
+            expect(result.body.articles).to.be.sortedBy("created_at", {
               descending: true
             });
           });
@@ -366,7 +368,7 @@ describe("app", () => {
           .get("/api/articles/?sort_by=created_at&order=asc")
           .expect(200)
           .then(result => {
-            expect(result.body).to.be.sortedBy("created_at", {
+            expect(result.body.articles).to.be.sortedBy("created_at", {
               descending: false
             });
           });
@@ -376,7 +378,7 @@ describe("app", () => {
           .get("/api/articles/?sort_by=author")
           .expect(200)
           .then(result => {
-            expect(result.body).to.be.sortedBy("author", {
+            expect(result.body.articles).to.be.sortedBy("author", {
               descending: true
             });
           });
@@ -386,7 +388,7 @@ describe("app", () => {
           .get("/api/articles/?sort_by=author&order=asc")
           .expect(200)
           .then(result => {
-            expect(result.body).to.be.sortedBy("author", {
+            expect(result.body.articles).to.be.sortedBy("author", {
               descending: false
             });
           });
@@ -396,7 +398,7 @@ describe("app", () => {
           .get("/api/articles/?order=asc")
           .expect(200)
           .then(result => {
-            expect(result.body).to.be.sortedBy("created_at", {
+            expect(result.body.articles).to.be.sortedBy("created_at", {
               descending: false
             });
           });
@@ -406,7 +408,7 @@ describe("app", () => {
           .get("/api/articles/?order=desc")
           .expect(200)
           .then(result => {
-            expect(result.body).to.be.sortedBy("created_at", {
+            expect(result.body.articles).to.be.sortedBy("created_at", {
               descending: true
             });
           });
@@ -416,10 +418,10 @@ describe("app", () => {
           .get("/api/articles/?author=butter_bridge")
           .expect(200)
           .then(result => {
-            expect(result.body).to.be.sortedBy("author", {
+            expect(result.body.articles).to.be.sortedBy("author", {
               descending: true
             });
-            expect(result.body[0].author).to.eql("butter_bridge");
+            expect(result.body.articles[0].author).to.eql("butter_bridge");
           });
       });
       it("GET - 200 - Get a response from the server when a query is passed: topic - mitch, returning an array with objects which has key value pair of topic & mitch", () => {
@@ -427,10 +429,10 @@ describe("app", () => {
           .get("/api/articles/?topic=mitch")
           .expect(200)
           .then(result => {
-            expect(result.body).to.be.sortedBy("created_at", {
+            expect(result.body.articles).to.be.sortedBy("created_at", {
               descending: true
             });
-            expect(result.body[0].topic).to.eql("mitch");
+            expect(result.body.articles[0].topic).to.eql("mitch");
           });
       });
       it("GET - 200 - Get a response from the server when a query is passed: author - lurker, returning an empty array", () => {
@@ -438,7 +440,7 @@ describe("app", () => {
           .get("/api/articles/?author=lurker")
           .expect(200)
           .then(result => {
-            expect(result.body).to.eql([]);
+            expect(result.body.articles).to.eql([]);
           });
       });
       it("GET - 200 - Get a response from the server when a query is passed: topic - paper, returning an empty array", () => {
@@ -446,7 +448,7 @@ describe("app", () => {
           .get("/api/articles/?topic=paper")
           .expect(200)
           .then(result => {
-            expect(result.body).to.eql([]);
+            expect(result.body.articles).to.eql([]);
           });
       });
       it("GET - 400 - Return an error when a column that does not exist is passed in the query - sort_by", () => {
@@ -463,7 +465,7 @@ describe("app", () => {
           .expect(200)
           .then(result => {
             // expect(result.body.msg).to.eql("Error! Column Does Not Exist");
-            expect(result.body).to.be.sortedBy("created_at", {
+            expect(result.body.articles).to.be.sortedBy("created_at", {
               descending: true
             });
           });

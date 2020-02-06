@@ -33,7 +33,7 @@ const getAllArticles = (req, res, next) => {
   //const { order } = req.query;
   selectAllArticles(sort_by, order, author, topic)
     .then(articles => {
-      res.status(200).send(articles);
+      res.status(200).send({ articles });
     })
     .catch(err => {
       next(err);
