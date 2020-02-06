@@ -1,7 +1,8 @@
 const {
   postCommentByArticleID,
   getAllCommentsByArticleID,
-  patchCommentsByCommentID
+  patchCommentsByCommentID,
+  deleteCommentByCommentID
 } = require("../models/comments.models");
 
 const addCommentByArticleID = (req, res, next) => {
@@ -46,8 +47,20 @@ const changeVotesByCommentID = (req, res, next) => {
     });
 };
 
+const removeCommentByCommentID = (req, res, next) => {
+  const { comment_id } = req.params;
+  deleteCommentByCommentID(comment_id)
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch(err => {
+      next(err);
+    });
+};
+
 module.exports = {
   addCommentByArticleID,
   getCommentsByArticleID,
-  changeVotesByCommentID
+  changeVotesByCommentID,
+  removeCommentByCommentID
 };

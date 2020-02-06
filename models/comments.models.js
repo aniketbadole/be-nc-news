@@ -55,8 +55,15 @@ const patchCommentsByCommentID = (comment_id, inc_votes = 0) => {
     });
 };
 
+const deleteCommentByCommentID = comment_id => {
+  return connection("comments")
+    .del()
+    .where({ comment_id });
+};
+
 module.exports = {
   postCommentByArticleID,
   getAllCommentsByArticleID,
-  patchCommentsByCommentID
+  patchCommentsByCommentID,
+  deleteCommentByCommentID
 };

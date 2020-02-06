@@ -553,6 +553,29 @@ describe("app", () => {
             expect(result.body.msg).to.equal("Invalid Query");
           });
       });
+      it("PUT - 405 - Return an error 405 when other methods are requested", () => {
+        return request(app)
+          .put("/api/comments/1")
+          .send({ name: "Aniket" })
+          .expect(405)
+          .then(result => {
+            expect(result.body.msg).to.equal("Method Not Allowed");
+          });
+      });
+      it("PATCH - 400 - Return an error from the server when an invalid comment ID is passed", () => {
+        return request(app)
+          .patch("/api/comments/invalid-id")
+          .send({ inc_votes: -42 })
+          .expect(400)
+          .then(result => {
+            expect(result.body.msg).to.equal("Invalid Query");
+          });
+      });
+      it("DELETE - 204 - Delete the comment by comment_id", () => {
+        return request(app)
+          .del("/api/comments/1")
+          .expect(204);
+      });
     });
   });
 });
