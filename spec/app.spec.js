@@ -537,7 +537,7 @@ describe("app", () => {
           });
       });
     });
-    describe("/comments/:comment_id", () => {
+    describe.only("/comments/:comment_id", () => {
       it("PATCH - 200 - Responds with incremented votes", () => {
         return request(app)
           .patch("/api/comments/2")
@@ -599,6 +599,21 @@ describe("app", () => {
           .then(result => {
             expect(result.body.msg).to.equal("Invalid Query");
           });
+      });
+      it("PATCH - 404 - Return error 404 when a valid but non existent comment ID is passed", () => {
+        return request(app)
+          .patch("/api/comments/1000")
+          .send({ inc_votes: 10 })
+          .expect(404)
+          .then(result => {
+            console.log(result.body);
+            expect(result.body.msg).to.equal("Not Found");
+          });
+      });
+      it("DELETE - 404 - Return error 404 when a valid but non existent comment ID is passed", () => {
+        return request(app)
+          .del("/api/comments/1000")
+          .expect(404);
       });
       it("PUT - 405 - Return an error 405 when other methods are requested", () => {
         return request(app)

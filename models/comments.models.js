@@ -56,15 +56,40 @@ const patchCommentsByCommentID = (comment_id, inc_votes = 0) => {
     .where({ comment_id })
     .increment("votes", inc_votes)
     .returning("*")
-    .then(comment => {
-      return comment[0];
+    .then(rows => {
+      return Promise.all([rows, checkIfCommentIDExist(comment_id)]);
+    })
+    .then(([rows, commentExist]) => {
+      if (commentExist) {
+        return rows[0];
+      } else return Promise.reject({ status: 404, msg: "Not Found" });
     });
+  // .then(comment => {
+  //   return comment[0];
+  // });
 };
 
 const deleteCommentByCommentID = comment_id => {
   return connection("comments")
     .del()
-    .where({ comment_id });
+    .where({ comment_id })
+    .then(rows => {
+      if (rows === 0) {
+        return Promise.reject({ status: 404, msg: "Not Found" });
+      }
+    });
+};
+
+// to check if a comment is is valid or not
+const checkIfCommentIDExist = comment_id => {
+  return connection("comments")
+    .select("comments.*")
+    .where({ comment_id })
+    .then(rowOfComments => {
+      if (rowOfComments.length === 0) {
+        return false;
+      } else return true;
+    });
 };
 
 module.exports = {
