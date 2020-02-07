@@ -14,6 +14,14 @@ describe("app", () => {
   after(() => {
     return connection.destroy();
   });
+  it("GET - 404 - Returns error 404 when the route does not exist", () => {
+    return request(app)
+      .get("/invalid-route")
+      .expect(404)
+      .then(result => {
+        expect(result.error.text).to.equal("Route does not exist!");
+      });
+  });
 
   describe("/api", () => {
     it("DELETE - 405 - Return an error 405 when other methods are requested", () => {
@@ -537,7 +545,7 @@ describe("app", () => {
           });
       });
     });
-    describe.only("/comments/:comment_id", () => {
+    describe("/comments/:comment_id", () => {
       it("PATCH - 200 - Responds with incremented votes", () => {
         return request(app)
           .patch("/api/comments/2")

@@ -14,7 +14,7 @@ const {
 app.use("/api", apiRouter);
 
 app.all("/*", (req, res, next) => {
-  res.status(404).send("Rout does not exist!");
+  res.status(404).send("Route does not exist!");
 });
 
 app.use(handle405Errors);
