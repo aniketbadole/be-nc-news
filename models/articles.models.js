@@ -16,15 +16,18 @@ const selectArticlesByID = article_id => {
     });
 };
 
-// const checkIfArticleExist = article_id => {
-//   return connection("articles")
-//     .select("articles.*")
-//     .where({ article_id }).then(articleRows => {
-//       if (articleRows.length === 0)
-//     })
-// };
+const checkIfArticleExist = article_id => {
+  return connection("articles")
+    .select("articles.*")
+    .where({ article_id })
+    .then(articleRows => {
+      if (articleRows.length === 0) {
+        return false;
+      } else return true;
+    });
+};
 
-const updateVotesByID = (article_id, inc_votes) => {
+const updateVotesByID = (article_id, inc_votes = 0) => {
   return connection("articles")
     .where("articles.article_id", article_id)
     .increment("votes", inc_votes)
@@ -68,4 +71,9 @@ const selectAllArticles = (
     });
 };
 
-module.exports = { selectArticlesByID, updateVotesByID, selectAllArticles };
+module.exports = {
+  selectArticlesByID,
+  updateVotesByID,
+  selectAllArticles,
+  checkIfArticleExist
+};

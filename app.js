@@ -13,6 +13,10 @@ const {
 
 app.use("/api", apiRouter);
 
+app.all("/*", (req, res, next) => {
+  res.status(404).send("Rout does not exist!");
+});
+
 app.use(handle405Errors);
 app.use(handleCustomErorrs);
 app.use(handlePsqlErorrs);

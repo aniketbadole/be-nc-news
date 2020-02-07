@@ -11,7 +11,7 @@ const addCommentByArticleID = (req, res, next) => {
   const { body } = req.body;
   postCommentByArticleID(article_id, username, body)
     .then(comment => {
-      res.status(200).send({ comment });
+      res.status(201).send({ comment });
     })
     .catch(err => {
       next(err);
@@ -24,7 +24,7 @@ const getCommentsByArticleID = (req, res, next) => {
   const { order } = req.query;
   getAllCommentsByArticleID(article_id, sort_by, order)
     .then(comments => {
-      res.status(200).send(comments);
+      res.status(200).send({ comments });
     })
     .catch(err => {
       next(err);

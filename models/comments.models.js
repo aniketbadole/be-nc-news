@@ -1,4 +1,5 @@
 const connection = require("../connection");
+const { checkIfArticleExist } = require("../models/articles.models");
 
 const postCommentByArticleID = (article_id, username, body) => {
   return connection("comments")
@@ -22,22 +23,32 @@ const getAllCommentsByArticleID = (
     .select("comments.*")
     .where({ article_id })
     .orderBy(sort_by, order)
-    .then(comments => {
-      if (comments.length === 0) {
-        return Promise.reject({ status: 404, msg: "Not Found" });
-      } else {
-        return comments;
-      }
-      // if (comments.length !== 0) {
-      //   return connection
-      //     .select("*")
-      //     .from("comments")
-      //     .where({ article_id })
-      //     .orderBy(sort_by, order);
-      // } else {
-      //   return Promise.reject({ status: 404, msg: "Not Found" });
-      // }
+    .then(commentRows => {
+      return Promise.all([commentRows, checkIfArticleExist(article_id)]);
+    })
+    .then(([commentRows, articleExist]) => {
+      if (articleExist) {
+        return commentRows;
+      } else return Promise.reject({ status: 404, msg: "Not Found" });
     });
+  // .then(comments => {
+  //   if (comments.length === 0) {
+  //     return Promise.reject({ status: 404, msg: "Not Found" });
+  //   } else {
+  //     return comments;
+  //   }
+
+  // if (comments.length !== 0) {
+  //   return connection
+  //     .select("*")
+  //     .from("comments")
+  //     .where({ article_id })
+  //     .orderBy(sort_by, order);
+  // } else {
+  //   return Promise.reject({ status: 404, msg: "Not Found" });
+  // }
+
+  // });
 };
 
 const patchCommentsByCommentID = (comment_id, inc_votes = 0) => {

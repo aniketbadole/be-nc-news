@@ -8,7 +8,8 @@ exports.handlePsqlErorrs = (err, req, res, next) => {
     const psqlErrors = {
       23503: { status: 404, msg: "Not Found" },
       "22P02": { status: 400, msg: "Invalid Query" },
-      42703: { status: 400, msg: "Error! Column Does Not Exist" }
+      42703: { status: 400, msg: "Error! Column Does Not Exist" },
+      23502: { status: 400, msg: "Error! Sending Incomplete Info" }
     };
     res
       .status(psqlErrors[err.code].status)

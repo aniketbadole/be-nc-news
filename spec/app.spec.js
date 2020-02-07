@@ -217,6 +217,15 @@ describe("app", () => {
             expect(result.body.article.votes).to.equal(50);
           });
       });
+      it("PATCH - 200 - Does not change votes when no value is passed", () => {
+        return request(app)
+          .patch("/api/articles/2")
+          .send({})
+          .then(result => {
+            expect(result.body.article).to.contain.key("votes");
+            expect(result.body.article.votes).to.equal(0);
+          });
+      });
       it("POST - 405 - Return an error 405 when other methods are requested with the parameter endpoint", () => {
         return request(app)
           .post("/api/articles/1")
@@ -236,13 +245,24 @@ describe("app", () => {
       });
     });
     describe("/articles/:article_id/comments", () => {
-      it("POST - 200 - Get a response from the server", () => {
+      it("POST - 201 - Get a response from the server", () => {
         return request(app)
           .post("/api/articles/2/comments")
+          .expect(201)
           .send({ username: "icellusedkars", body: "this is a comment" })
           .then(result => {
+            console.log(result.body);
             expect(result.body).to.have.keys("comment");
             expect(result.body.comment).to.contain.keys("body", "comment_id");
+          });
+      });
+      it("POST - 400 - Return an error when the sending incomplete data", () => {
+        return request(app)
+          .post("/api/articles/1/comments")
+          .expect(400)
+          .send({ body: "this is a comment" })
+          .then(result => {
+            expect(result.body.msg).to.equal("Error! Sending Incomplete Info");
           });
       });
       it("POST - 404 - Return error 404 when a valid but non existent ID is passed", () => {
@@ -267,9 +287,9 @@ describe("app", () => {
           .get("/api/articles/1/comments")
           .expect(200)
           .then(result => {
-            expect(result.body.length).to.equal(13);
-            expect(result.body[0].article_id).to.eql(1);
-            expect(result.body[0]).to.contain.keys("comment_id");
+            expect(result.body.comments.length).to.equal(13);
+            expect(result.body.comments[0].article_id).to.eql(1);
+            expect(result.body.comments[0]).to.contain.keys("comment_id");
           });
       });
       it("GET - 404 - Return error 404 when a valid but non existent ID is passed", () => {
@@ -293,9 +313,38 @@ describe("app", () => {
           .get("/api/articles/1/comments?sort_by=created_at")
           .expect(200)
           .then(result => {
-            expect(result.body).to.be.sortedBy("created_at", {
+            expect(result.body.comments).to.be.sortedBy("created_at", {
               descending: true
             });
+          });
+      });
+      it("GET - 200 - Get a response from the server when a query is passed: order - ascending", () => {
+        return request(app)
+          .get("/api/articles/1/comments?order=asc")
+          .expect(200)
+          .then(result => {
+            expect(result.body.comments).to.be.sortedBy("created_at", {
+              descending: false
+            });
+          });
+      });
+      it("GET - 200 - Get a response from the server when a query is passed: order - descending", () => {
+        return request(app)
+          .get("/api/articles/1/comments?order=desc")
+          .expect(200)
+          .then(result => {
+            expect(result.body.comments).to.be.sortedBy("created_at", {
+              descending: true
+            });
+          });
+      });
+      it("GET - 200 - Get a response from the server: article exists but has no comments, returning an empty array", () => {
+        return request(app)
+          .get("/api/articles/2/comments")
+          .expect(200)
+          .then(result => {
+            console.log(result.body);
+            expect(result.body.comments).to.eql([]);
           });
       });
       it("GET - 200 - Get a response from the server when a query is passed", () => {
@@ -303,7 +352,7 @@ describe("app", () => {
           .get("/api/articles/1/comments?sort_by=votes")
           .expect(200)
           .then(result => {
-            expect(result.body).to.be.sortedBy("votes", {
+            expect(result.body.comments).to.be.sortedBy("votes", {
               descending: true
             });
           });
@@ -313,7 +362,7 @@ describe("app", () => {
           .get("/api/articles/1/comments?sort_by=votes&order=asc")
           .expect(200)
           .then(result => {
-            expect(result.body).to.be.sortedBy("votes");
+            expect(result.body.comments).to.be.sortedBy("votes");
           });
       });
       it("PATCH - 405 - Return an error 405 when other methods are requested", () => {
